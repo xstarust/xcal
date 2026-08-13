@@ -1,0 +1,39 @@
+[package]
+name = "xcal"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+description = "天文历法核心库 - 农历、节气、六十甲子、真太阳时"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/liupengfei/xcal"
+homepage = "https://github.com/liupengfei/xcal"
+documentation = "https://docs.rs/xcal"
+authors = ["liupengfei"]
+keywords = ["lunar", "calendar", "astronomy", "jieqi", "ganzhi"]
+categories = ["date-and-time", "science::astronomy"]
+include = ["src/**", "tests/**", "docs/**", "README.md", "Cargo.toml", "LICENSE"]
+
+[badges]
+maintenance = { status = "actively-developed" }
+
+[package.metadata.docs.rs]
+all-features = true
+
+[dependencies]
+# 零外部依赖
+
+[features]
+default = []
+serde = ["dep:serde"]
+
+[dependencies.serde]
+version = "1"
+features = ["derive"]
+optional = true
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[dev-dependencies]
+# 测试依赖
