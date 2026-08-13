@@ -77,7 +77,8 @@ pub fn local_mean_time(jd: f64, longitude: f64) -> (i32, u32, u32) {
     let correction_seconds = (longitude - standard_meridian) / 15.0 * 3600.0;
     let jd_adjusted = jd + correction_seconds / 86400.0;
 
-    let fraction = jd_adjusted - jd_adjusted.floor();
+    // JD starts at noon; shift to civil midnight before extracting the clock.
+    let fraction = (jd_adjusted + 0.5).rem_euclid(1.0);
     let total_seconds = (fraction * 86400.0).round() as i64;
     let norm = total_seconds.rem_euclid(86400);
 
@@ -184,12 +185,32 @@ mod tests {
     }
 
     #[test]
+    fn test_lmt_uses_midnight_based_clock() {
+        // JD .5 is civil midnight; JD .0 is civil noon.
+        assert_eq!(local_mean_time(2451544.5, 120.0), (0, 0, 0));
+        assert_eq!(local_mean_time(2451545.0, 120.0), (12, 0, 0));
+    }
+
+    #[test]
     fn test_lmt_shanghai_six_minutes_ahead() {
-        // 上海 121.5°E: JD=2460310.5 = 2024-01-01 12:00 UTC
-        // LMT = 12:00 + (121.5-120)/15*3600 秒 = 12:06
+        // 上海 121.5°E: JD=2460310.5 = 2024-01-01 00:00 UTC
+        // LMT = 00:00 + (121.5-120)/15*3600 秒 = 00:06
         let jd = 2460310.5;
         let (h, m, _) = local_mean_time(jd, 121.5);
-        assert_eq!((h, m), (12, 6));
+        assert_eq!((h, m), (0, 6));
+    }
+
+    #[test]
+    fn test_lmt_normalizes_across_midnight() {
+        assert_eq!(local_mean_time(2451544.5, 127.5), (23, 30, 0));
+        assert_eq!(local_mean_time(2451544.5, 100.0), (23, 40, 0));
+        assert_eq!(local_mean_time(2451544.5 - 1.0 / 48.0, 120.0), (23, 30, 0));
+    }
+
+    #[test]
+    fn test_ast_uses_civil_clock() {
+        let (hour, minute, _) = apparent_solar_time(2451544.5, 120.0);
+        assert_eq!((hour, minute), (23, 56));
     }
 
     #[test]
@@ -197,10 +218,12 @@ mod tests {
         let jd = 2460310.5;
         let (lm_h, lm_m, _) = local_mean_time(jd, 120.0);
         let (as_h, as_m, _) = apparent_solar_time(jd, 120.0);
-        let diff_min = (as_h * 60 + as_m as i32) - (lm_h * 60 + lm_m as i32);
+        let lmt = lm_h * 3600 + lm_m as i32 * 60;
+        let ast = as_h * 3600 + as_m as i32 * 60;
+        let diff = (ast - lmt + 43_200).rem_euclid(86_400) - 43_200;
         assert!(
-            diff_min.abs() <= 20,
-            "LMT=({lm_h},{lm_m}) AST=({as_h},{as_m}) diff={diff_min}min"
+            diff.abs() <= 1200,
+            "LMT=({lm_h},{lm_m}) AST=({as_h},{as_m}) diff={diff}s"
         );
     }
 
