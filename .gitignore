@@ -1,5 +1,15 @@
+# Rust build output
 target/
-Cargo.lock
+
+# Local environment
 .env
 .env.*
 !.env.example
+
+# Editor and OS files
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*.rs.bk
