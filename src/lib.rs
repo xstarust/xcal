@@ -8,9 +8,9 @@
 //! use xcal::time::jd::JulianDay;
 //! use xcal::solar_to_lunar;
 //!
-//! // 公历转农历（占位实现，TODO 完成后更新预期值）
-//! let lunar = solar_to_lunar(2024, 6, 21);
-//! assert_eq!(lunar.year, 2024);
+//! // 公历转农历
+//! let lunar = solar_to_lunar(2024, 2, 10);
+//! assert_eq!((lunar.year, lunar.month, lunar.day), (2024, 1, 1));
 //!
 //! // 儒略日
 //! let jd = JulianDay::from_ymd(2000, 1, 1);

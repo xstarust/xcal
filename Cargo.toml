@@ -12,7 +12,7 @@ documentation = "https://docs.rs/xcal"
 authors = ["liupengfei"]
 keywords = ["lunar", "calendar", "astronomy", "jieqi", "ganzhi"]
 categories = ["date-and-time", "science::astronomy"]
-include = ["src/**", "tests/**", "docs/**", "README.md", "Cargo.toml", "LICENSE"]
+include = ["src/**", "tests/**", "README.md", "Cargo.toml", "LICENSE"]
 
 [badges]
 maintenance = { status = "actively-developed" }
