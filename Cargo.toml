@@ -11,7 +11,7 @@ homepage = "https://github.com/xstarust/xcal"
 documentation = "https://docs.rs/xcal"
 authors = ["Phil <xstarust@gmail.com>"]
 keywords = ["lunar", "calendar", "astronomy", "jieqi", "ganzhi"]
-categories = ["date-and-time", "science::astronomy"]
+categories = ["date-and-time"]
 include = ["src/**", "tests/**", "README.md", "Cargo.toml", "LICENSE"]
 
 [badges]
